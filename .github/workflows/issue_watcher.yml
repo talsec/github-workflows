@@ -1,0 +1,33 @@
+name: Issue watcher
+
+on:
+  workflow_call:
+    inputs:
+      days-before-issue-stale:
+        description: 'Number of days before an issue is marked as stale'
+        type: number
+        default: 14
+      days-before-issue-close:
+        description: 'Number of days before an issue is closed'
+        type: number
+        default: 14
+
+jobs:
+  process_issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/stale@v9.0.0
+        with:
+          days-before-issue-stale: ${{ inputs.days-before-issue-stale }}
+          stale-issue-message: |
+            Hello!
+            This issue has been marked as inactive. If there is no further activity within the next 14 days, this issue will be automatically closed.
+            If you believe this issue is still relevant and requires attention, please comment or provide additional information.
+          stale-issue-label: "stale"
+          days-before-issue-close: ${{ inputs.days-before-issue-close }}
+          close-issue-message: |
+            Hello!
+            This issue has been closed. If you believe this issue is still relevant and requires attention, please reopen the issue.
+          any-of-issue-labels: "waiting for response,can't reproduce,invalid,wontfix,duplicate"
